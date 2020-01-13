@@ -1,10 +1,87 @@
 <resources>
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <!-- New MaterialComponents attributes. -->
         <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
+        <item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+        <item name="colorOnSecondary">@color/md_white_1000</item>
+        <item name="colorSurface">@color/colorPrimary</item>
+
+
+
+        <!--
+         <item name="colorOnPrimary">@color/my_app_color_on_primary</item>
+                <item name="colorOnBackground">@color/my_app_color_on_background</item>
+                <item name="colorOnError">@color/my_app_color_on_error</item>
+                <item name="colorOnSurface">@color/my_app_color_on_surface</item>
+                <item name="scrimBackground">@color/mtrl_scrim_color</item>
+                -->
+
+
+        <item name="textAppearanceHeadline1">@style/TextAppearance.MaterialComponents.Headline1</item>
+        <item name="textAppearanceHeadline2">@style/TextAppearance.MaterialComponents.Headline2</item>
+        <item name="textAppearanceHeadline3">@style/TextAppearance.MaterialComponents.Headline3</item>
+        <item name="textAppearanceHeadline4">@style/TextAppearance.MaterialComponents.Headline4</item>
+        <item name="textAppearanceHeadline5">@style/TextAppearance.MaterialComponents.Headline5</item>
+        <item name="textAppearanceHeadline6">@style/TextAppearance.MaterialComponents.Headline6</item>
+        <item name="textAppearanceSubtitle1">@style/TextAppearance.MaterialComponents.Subtitle1</item>
+        <item name="textAppearanceSubtitle2">@style/TextAppearance.MaterialComponents.Subtitle2</item>
+        <item name="textAppearanceBody1">@style/TextAppearance.MaterialComponents.Body1</item>
+        <item name="textAppearanceBody2">@style/TextAppearance.MaterialComponents.Body2</item>
+        <item name="textAppearanceCaption">@style/TextAppearance.MaterialComponents.Caption</item>
+        <item name="textAppearanceButton">@style/TextAppearance.MaterialComponents.Button</item>
+        <item name="textAppearanceOverline">@style/TextAppearance.MaterialComponents.Overline</item>
+
+        <item name="textInputStyle">@style/Widget.BudgetManager.TextInput</item>
+        <item name="materialAlertDialogTheme">@style/ThemeOverlay.BudgetManager.MaterialAlertDialog</item>
+
     </style>
 
+    <style name="Widget.BudgetManager.ImageButton" parent="Widget.MaterialComponents.Button">
+        <!--<item name="backgroundTint">@color/primaryDarkColor</item>-->
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="tint">@color/md_white_1000</item>
+        <item name="rippleColor">@color/md_white_1000</item>
+        <item name="elevation">0dp</item>
+        <item name="iconSize">24dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <style name="Widget.BudgetManager.ImageButton.TextButton" parent="Widget.MaterialComponents.Button.TextButton">
+        <!--<item name="backgroundTint">@color/primaryDarkColor</item>-->
+        <item name="android:paddingRight">8dp</item>
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="tint">@color/md_white_1000</item>
+        <item name="rippleColor">@color/md_white_1000</item>
+        <item name="elevation">0dp</item>
+        <item name="iconSize">24dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <style name="Widget.BudgetManager.TextInput" parent="Widget.MaterialComponents.TextInputLayout.FilledBox">
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+        <item name="colorOnSurface">@android:color/transparent</item>
+    </style>
+
+    <style name="ThemeOverlay.BudgetManager.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorSurface">@color/md_white_1000</item>
+    </style>
 </resources>
