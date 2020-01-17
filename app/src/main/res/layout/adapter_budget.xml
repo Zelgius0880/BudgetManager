@@ -1,49 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/name"
-        android:layout_width="0dp"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/budget"
+        style="@style/Widget.BudgetManager.MaterialCardViewStyle.Primary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardElevation="2dp"
+        app:cardUseCompatPadding="true">
+
+        <zelgius.com.ripplelongpress.RippleLongPressView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:rb_color="#0099CC"
+            app:rb_radius="32dp"
+            android:id="@+id/rippleBackground"
+            app:rb_rippleAmount="1"
+            app:rb_duration="3000"
+            app:rb_scale="100">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/budgetName"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    app:layout_constraintEnd_toStartOf="@+id/budgetStartDate"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/budgetStartDate"
+                    tools:text="Budget 1" />
+
+                <TextView
+                    android:id="@+id/budgetStartDate"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+                    android:textAlignment="textEnd"
+                    app:layout_constraintBottom_toBottomOf="@+id/budgetAdd"
+                    app:layout_constraintEnd_toStartOf="@+id/budgetAdd"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/budgetName"
+                    app:layout_constraintTop_toTopOf="@+id/budgetAdd"
+                    tools:text="23/07/2020" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/budgetAdd"
+                    style="@style/Widget.BudgetManager.ImageButton.TextButton"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    app:icon="@drawable/ic_baseline_add_24"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toEndOf="@+id/budgetStartDate"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </zelgius.com.ripplelongpress.RippleLongPressView>
+    </com.google.android.material.card.MaterialCardView>
+
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/part"
+        style="@style/Widget.BudgetManager.MaterialCardViewStyle.Secondary"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:text="TextView"
-        app:layout_constraintEnd_toStartOf="@+id/startDate"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/startDate"
-        tools:text="Budget 1" />
+        app:cardElevation="2dp"
+        app:cardUseCompatPadding="true">
 
-    <TextView
-        android:id="@+id/startDate"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="8dp"
-        android:text="TextView"
-        android:textAlignment="textEnd"
-        app:layout_constraintBottom_toBottomOf="@+id/close"
-        app:layout_constraintEnd_toStartOf="@+id/close"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/name"
-        app:layout_constraintTop_toTopOf="@+id/close"
-        tools:text="23/07/2020" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/close"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        style="@style/Widget.BudgetManager.ImageButton.TextButton"
-        app:icon="@drawable/ic_baseline_check_24"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/startDate"
-        app:layout_constraintTop_toTopOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/partName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toStartOf="@+id/partStartDate"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/partStartDate"
+                tools:text="Budget 1" />
+
+            <TextView
+                android:id="@+id/partStartDate"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
+                android:textAlignment="textEnd"
+                app:layout_constraintBottom_toBottomOf="@+id/partClose"
+                app:layout_constraintEnd_toStartOf="@+id/partClose"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/partName"
+                app:layout_constraintTop_toTopOf="@+id/partClose"
+                tools:text="23/07/2020" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/partClose"
+                style="@style/Widget.BudgetManager.ImageButton.TextButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                app:icon="@drawable/ic_baseline_check_24"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/partStartDate"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</LinearLayout>

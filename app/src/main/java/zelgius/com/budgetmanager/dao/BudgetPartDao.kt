@@ -20,16 +20,16 @@ interface BudgetPartDao {
     suspend fun get(): List<BudgetPart>
 
     @Query("""
-       SELECT b.id AS b_id, b.name AS b_name, b.closed AS b_closed, b.start_date AS b_start_date, p.* FROM budget_part p
-        JOIN budget b ON p.ref_budget = b.id
-        ORDER BY b.closed, b.start_date, p.ref_budget
+       SELECT b.id AS b_id, b.name AS b_name, b.closed AS b_closed, b.start_date AS b_start_date, p.* FROM budget b
+        LEFT OUTER JOIN budget_part p ON p.ref_budget = b.id
+        ORDER BY b.closed, b.start_date
     """)
     suspend fun getBudgetAndPart(): List<BudgetAndPart>
 
     @Query("""
-       SELECT b.id AS b_id, b.name AS b_name, b.closed AS b_closed, b.start_date AS b_start_date, p.* FROM budget_part p
-        JOIN budget b ON p.ref_budget = b.id
-        ORDER BY b.closed, b.start_date, p.ref_budget
+        SELECT b.id AS b_id, b.name AS b_name, b.closed AS b_closed, b.start_date AS b_start_date, p.* FROM budget b
+        LEFT OUTER JOIN budget_part p ON p.ref_budget = b.id
+        ORDER BY b.closed, b.start_date
     """)
     fun getBudgetAndPartDataSource(): DataSource.Factory<Int, BudgetAndPart>
 
@@ -38,5 +38,5 @@ interface BudgetPartDao {
 
 data class BudgetAndPart(
         @Embedded(prefix = "b_")  val budget: Budget,
-        @Embedded val part: BudgetPart
+        @Embedded val part: BudgetPart?
 )

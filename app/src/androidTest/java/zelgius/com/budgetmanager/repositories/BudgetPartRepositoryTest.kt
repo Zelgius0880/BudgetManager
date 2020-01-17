@@ -18,7 +18,7 @@ class BudgetPartRepositoryTest {
     fun createDb() {
         val context = ApplicationProvider.getApplicationContext<Context>()
         repository = BudgetPartRepositoryTestImpl(context)
-        repositoryBudget =  BudgetRepositoryTest.Companion.BudgetRepositoryTestImpl(context)
+        repositoryBudget = BudgetRepositoryTest.Companion.BudgetRepositoryTestImpl(context)
     }
 
     companion object {
@@ -29,11 +29,11 @@ class BudgetPartRepositoryTest {
         }
 
         private lateinit var repository: BudgetPartRepositoryTestImpl
-        private lateinit var repositoryBudget:  BudgetRepositoryTest.Companion.BudgetRepositoryTestImpl
+        private lateinit var repositoryBudget: BudgetRepositoryTest.Companion.BudgetRepositoryTestImpl
 
         @JvmStatic
         @AfterClass
-        fun closeDb(){
+        fun closeDb() {
             repository.close()
         }
 
@@ -83,10 +83,12 @@ class BudgetPartRepositoryTest {
 
     @Test
     fun getBudgetAndPart() {
-        val b = Budget(name = "Budget Test")
+
+        val budgets = listOf(Budget(name = "Budget Test 1"), Budget(name = "Budget Test 2"), Budget(name = "Budget Test 3"))
+        val b = budgets[1]
 
         runBlocking {
-            repositoryBudget.insert(b)
+            repositoryBudget.insert(*budgets.toTypedArray())
             assertTrue(repositoryBudget.get().contains(b))
 
             val list = (1..5).map {
@@ -97,8 +99,14 @@ class BudgetPartRepositoryTest {
             }.toMutableList()
 
             repository.insert(*list.toTypedArray())
-            repository.getBudgetAndPart().forEach {
-                it.budget == b
+            repository.getBudgetAndPart().apply {
+
+                budgets.containsAll(
+                        this
+                                .map { it.budget }
+                                .distinct()
+                )
+            }.forEach {
                 list.remove(it.part)
             }
 

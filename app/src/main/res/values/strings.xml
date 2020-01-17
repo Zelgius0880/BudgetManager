@@ -6,4 +6,8 @@
     <string name="view_spare_entries">View Spare Entries</string>
     <string name="name">Name</string>
     <string name="new_budget">New Budget</string>
+    <string name="save_ok">Save Ok</string>
+    <string name="name_required">Please enter a name</string>
+    <string name="snack_delete_success">Item was removed from the list.</string>
+    <string name="undo">Undo</string>
 </resources>

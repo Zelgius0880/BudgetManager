@@ -1,2 +1,3 @@
+include ':rippleLongPress'
 rootProject.name='BudgetManager'
 include ':app'

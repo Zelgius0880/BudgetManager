@@ -37,7 +37,7 @@
 
         <item name="textInputStyle">@style/Widget.BudgetManager.TextInput</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.BudgetManager.MaterialAlertDialog</item>
-
+        <item name="materialCardViewStyle">@style/ThemeOverlay.BudgetManager.MaterialAlertDialog</item>
     </style>
 
     <style name="Widget.BudgetManager.ImageButton" parent="Widget.MaterialComponents.Button">
@@ -83,5 +83,18 @@
 
     <style name="ThemeOverlay.BudgetManager.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="colorSurface">@color/md_white_1000</item>
+    </style>
+
+    <style name="Widget.BudgetManager.MaterialCardViewStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="colorSurface">@color/md_white_1000</item>
+    </style>
+
+
+    <style name="Widget.BudgetManager.MaterialCardViewStyle.Primary" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/md_teal_50</item>
+    </style>
+
+    <style name="Widget.BudgetManager.MaterialCardViewStyle.Secondary" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/md_green_50</item>
     </style>
 </resources>
