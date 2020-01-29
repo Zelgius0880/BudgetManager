@@ -24,14 +24,21 @@ class RippleLongPressView : RippleBackground {
     var onTap: Runnable
 
     var l: ((View)->Boolean)? = null
+    var clickListener: ((View)->Unit)? = null
 
+    var isLocked: Boolean = false
 
     fun setOnLongClickListener(l: (View)->Boolean) {
         super.setOnLongClickListener(l)
         this.l = l
     }
 
-    var onLongPress = Runnable {
+    fun setOnClickListener(l: (View)->Unit) {
+        super.setOnClickListener(l)
+        clickListener = l
+    }
+
+    private var onLongPress = Runnable {
         clicked = true
         // Long Press
         l?.invoke(this)
@@ -58,27 +65,41 @@ class RippleLongPressView : RippleBackground {
         setOnTouchListener { view, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
-                    boundaries = Rect(view.left, view.top, view.right, view.bottom)
-                    handler.postDelayed(onTap, ViewConfiguration.getTapTimeout().toLong())
+                    if(!isLocked) {
+                        boundaries = Rect(view.left, view.top, view.right, view.bottom)
+                        handler.postDelayed(onTap, ViewConfiguration.getTapTimeout().toLong())
 
-                    startRippleAnimation()
+                        startRippleAnimation()
+                    }
+                    true
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {
                     handler.removeCallbacks(onLongPress)
                     handler.removeCallbacks(onTap)
-                    if (!clicked) view.performClick()
+                    if (!clicked){
+                        //view.performClick()
+
+                    }
                     clicked = false
                     stopRippleAnimation()
+                    false
                 }
                 MotionEvent.ACTION_MOVE -> {
                     if (!boundaries!!.contains(view.left + event.x.toInt(), view.top + event.y.toInt())) {
                         handler.removeCallbacks(onLongPress)
                         handler.removeCallbacks(onTap)
+                        true
+                    } else {
+                        handler.removeCallbacks(onLongPress)
+                        handler.removeCallbacks(onTap)
+                        if (!clicked) view.performClick()
+                        clicked = false
+                        stopRippleAnimation()
+                        false
                     }
-
                 }
+                else -> false
             }
-            true
         }
     }
 }

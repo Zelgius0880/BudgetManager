@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="color1">#3182bd</color>
+    <color name="color2">#6baed6</color>
+    <color name="color3">#9ecae1</color>
+    <color name="color4">#c6dbef</color>
+    <color name="color5">#e6550d</color>
+    <color name="color6">#fd8d3c</color>
+    <color name="color7">#fdae6b</color>
+    <color name="color8">#fdd0a2</color>
+    <color name="color9">#31a354</color>
+    <color name="color10">#74c476</color>
+    <color name="color11">#a1d99b</color>
+    <color name="color12">#c7e9c0</color>
+    <color name="color13">#756bb1</color>
+    <color name="color14">#9e9ac8</color>
+    <color name="color15">#bcbddc</color>
+    <color name="color16">#dadaeb</color>
+    <color name="color17">#636363</color>
+    <color name="color18">#969696</color>
+    <color name="color19">#bdbdbd</color>
+    <color name="color20">#d9d9d9</color>
+    <color name="color21">#fbb4ae</color>
+    <color name="color22">#b3cde3</color>
+    <color name="color23">#ccebc5</color>
+    <color name="color24">#decbe4</color>
+    <color name="color25">#fed9a6</color>
+    <color name="color26">#ffffcc</color>
+    <color name="color27">#e5d8bd</color>
+    <color name="color28">#fddaec</color>
+    <color name="color29">#f2f2f2</color>
+
+    <array name="rainbow">
+        <item>@color/color1</item>
+        <item>@color/color2</item>
+        <item>@color/color3</item>
+        <item>@color/color25</item>
+        <item>@color/color4</item>
+        <item>@color/color6</item>
+        <item>@color/color7</item>
+        <item>@color/color9</item>
+        <item>@color/color5</item>
+        <item>@color/color11</item>
+        <item>@color/color12</item>
+        <item>@color/color23</item>
+        <item>@color/color13</item>
+        <item>@color/color14</item>
+        <item>@color/color15</item>
+        <item>@color/md_purple_700</item>
+        <item>@color/color17</item>
+        <item>@color/color18</item>
+        <item>@color/color19</item>
+        <item>@color/md_blue_grey_700</item>
+        <item>@color/color27</item>
+        <item>@color/md_orange_600</item>
+        <item>@color/color21</item>
+        <item>@color/md_cyan_800</item>
+        <item>@color/color22</item>
+        <item>@color/color24</item>
+        <item>@color/md_amber_400</item>
+        <item>@color/color28</item>
+        <item>@color/md_pink_600</item>
+    </array>
+</resources>

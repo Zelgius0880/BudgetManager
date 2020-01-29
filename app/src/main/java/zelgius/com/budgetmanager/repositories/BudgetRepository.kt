@@ -24,6 +24,11 @@ open class BudgetRepository(context: Context) {
                 }
             }
 
+    suspend fun closeBudget(closed: Boolean, budget: Budget) =
+            withContext(Dispatchers.Default) {
+                budgetDao.closePartFromBudget(closed, budget.id!!)
+            }
+
     suspend fun delete(vararg budget: Budget) =
             withContext(Dispatchers.Default) {
                 budget.forEach {
@@ -34,6 +39,18 @@ open class BudgetRepository(context: Context) {
     suspend fun get() =
             withContext(Dispatchers.Default) {
                 budgetDao.get()
+            }
+
+    suspend fun get(id: Long) =
+            withContext(Dispatchers.Default) {
+                budgetDao.get(id)
+            }
+
+
+    suspend fun get(closed: Boolean) =
+            withContext(Dispatchers.Default) {
+                if(closed) budgetDao.getClosed()
+                else budgetDao.getNotClosed()
             }
 
     fun getDataSource() =

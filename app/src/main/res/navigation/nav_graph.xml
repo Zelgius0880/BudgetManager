@@ -18,10 +18,23 @@
             app:popEnterAnim="@anim/nav_default_pop_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@id/homeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_pieFragment"
+            app:destination="@id/pieFragment"
+            app:enterAnim="@anim/nav_default_enter_anim"
+            app:exitAnim="@anim/nav_default_exit_anim"
+            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popExitAnim="@anim/nav_default_pop_exit_anim"
+            app:popUpTo="@id/homeFragment" />
     </fragment>
     <fragment
         android:id="@+id/budgetFragment"
         android:name="zelgius.com.budgetmanager.fragments.BudgetFragment"
-        tools:layout="@layout/fragment_compose"
-        android:label="BudgetFragment" />
+        android:label="@string/edit_repartition"
+        tools:layout="@layout/fragment_compose" />
+    <fragment
+        android:id="@+id/pieFragment"
+        android:name="zelgius.com.budgetmanager.fragments.PieFragment"
+        android:label="Pie Fragment"
+        tools:layout="@layout/fragment_pie" />
 </navigation>

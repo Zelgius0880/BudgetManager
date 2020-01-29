@@ -10,4 +10,7 @@
     <string name="name_required">Please enter a name</string>
     <string name="snack_delete_success">Item was removed from the list.</string>
     <string name="undo">Undo</string>
+    <string name="goal">Goal</string>
+    <string name="invalid_number">Invalid number</string>
+    <string name="edit_repartition">Edit part repartition</string>
 </resources>

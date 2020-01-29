@@ -14,64 +14,78 @@
         app:cardElevation="2dp"
         app:cardUseCompatPadding="true">
 
-        <zelgius.com.ripplelongpress.RippleLongPressView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:rb_color="#0099CC"
-            app:rb_radius="32dp"
-            android:id="@+id/rippleBackground"
-            app:rb_rippleAmount="1"
-            app:rb_duration="3000"
-            app:rb_scale="100">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-                <TextView
-                    android:id="@+id/budgetName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="8dp"
-                    app:layout_constraintEnd_toStartOf="@+id/budgetStartDate"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/budgetStartDate"
-                    tools:text="Budget 1" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/deleteBudget"
+                        style="@style/Widget.BudgetManager.ImageButton.TextButton"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="8dp"
+                        android:layout_marginEnd="196dp"
+                        app:icon="@drawable/ic_baseline_delete_outline_24"
+                        app:iconTint="@color/md_red_300"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0" />
 
-                <TextView
-                    android:id="@+id/budgetStartDate"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="8dp"
-                    android:textAlignment="textEnd"
-                    app:layout_constraintBottom_toBottomOf="@+id/budgetAdd"
-                    app:layout_constraintEnd_toStartOf="@+id/budgetAdd"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/budgetName"
-                    app:layout_constraintTop_toTopOf="@+id/budgetAdd"
-                    tools:text="23/07/2020" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/closeBudget"
+                        style="@style/Widget.BudgetManager.ImageButton.TextButton"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="8dp"
+                        android:layout_marginStart="108dp"
+                        app:icon="@drawable/ic_baseline_check_circle_outline_24"
+                        app:iconTint="@color/md_black_1000"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/budgetAdd"
-                    style="@style/Widget.BudgetManager.ImageButton.TextButton"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="8dp"
-                    app:icon="@drawable/ic_baseline_add_24"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/budgetStartDate"
-                    app:layout_constraintTop_toTopOf="parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintEnd_toStartOf="@+id/budgetStartDate"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/closeBudget"
+                        app:layout_constraintTop_toTopOf="@+id/budgetStartDate"
+                        tools:text="Budget 1" />
 
-        </zelgius.com.ripplelongpress.RippleLongPressView>
+                    <TextView
+                        android:id="@+id/budgetStartDate"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:textAlignment="textEnd"
+                        app:layout_constraintBottom_toBottomOf="@+id/budgetAdd"
+                        app:layout_constraintEnd_toStartOf="@+id/budgetAdd"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/name"
+                        app:layout_constraintTop_toTopOf="@+id/budgetAdd"
+                        tools:text="23/07/2020" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/budgetAdd"
+                        style="@style/Widget.BudgetManager.ImageButton.TextButton"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_goneMarginEnd="8dp"
+                        app:icon="@drawable/ic_baseline_add_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/deleteBudget"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 
     <com.google.android.material.card.MaterialCardView
@@ -80,55 +94,65 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:clickable="true"
         app:cardElevation="2dp"
         app:cardUseCompatPadding="true">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="56dp">
 
-            <TextView
-                android:id="@+id/partName"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toStartOf="@+id/partStartDate"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/partStartDate"
-                tools:text="Budget 1" />
+                    <TextView
+                        android:id="@+id/partName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/partGoal"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/closePart"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="Budget 1" />
 
-            <TextView
-                android:id="@+id/partStartDate"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
-                android:textAlignment="textEnd"
-                app:layout_constraintBottom_toBottomOf="@+id/partClose"
-                app:layout_constraintEnd_toStartOf="@+id/partClose"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/partName"
-                app:layout_constraintTop_toTopOf="@+id/partClose"
-                tools:text="23/07/2020" />
+                    <TextView
+                        android:id="@+id/partGoal"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:textAlignment="textEnd"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/deletePart"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/partName"
+                        app:layout_constraintTop_toTopOf="parent"
+                        tools:text="23/07/2020" />
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/partClose"
-                style="@style/Widget.BudgetManager.ImageButton.TextButton"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                app:icon="@drawable/ic_baseline_check_24"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toEndOf="@+id/partStartDate"
-                app:layout_constraintTop_toTopOf="parent" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/deletePart"
+                        style="@style/Widget.BudgetManager.ImageButton.TextButton"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="8dp"
+                        app:icon="@drawable/ic_baseline_delete_outline_24"
+                        app:iconTint="@color/md_red_300"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/closePart"
+                        style="@style/Widget.BudgetManager.ImageButton.TextButton"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="8dp"
+                        app:icon="@drawable/ic_baseline_check_circle_outline_24"
+                        app:iconTint="@color/md_black_1000"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </LinearLayout>

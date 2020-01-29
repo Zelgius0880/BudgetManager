@@ -8,10 +8,21 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "budget_part", foreignKeys = [ForeignKey(entity = Budget::class, parentColumns = ["id"], childColumns = ["ref_budget"])])
 data class BudgetPart(
         @PrimaryKey(autoGenerate = true) var id: Long? = null,
-        val percent: Double = 0.0,
         var name: String = "",
-        val goal: Double = -1.0,
-        val closed: Boolean = false,
+        var goal: Double = -1.0,
+        var closed: Boolean = false,
         val reached: Boolean = false,
         @ColumnInfo(index = true, name = "ref_budget") var refBudget: Long? = null
-)
+) {
+    constructor(id: Long?,
+                percent: Double,
+                name: String,
+                goal: Double,
+                closed: Boolean,
+                reached: Boolean,
+                refBudget: Long?) : this(id, name, goal, closed, reached, refBudget) {
+        this.percent = percent
+    }
+
+    var percent: Double = 0.0
+}

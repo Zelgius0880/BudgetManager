@@ -36,6 +36,19 @@ open class BudgetPartRepository(context: Context) {
                 budgetPartDao.get()
             }
 
+
+    suspend fun get(refBudget: Long) =
+            withContext(Dispatchers.Default) {
+                budgetPartDao.get(refBudget)
+            }
+
+
+    suspend fun getGreaterThanZero(refBudget: Long) =
+            withContext(Dispatchers.Default) {
+                budgetPartDao.getGreaterThanZero(refBudget)
+            }
+
+
     suspend fun getBudgetAndPart() =
             withContext(Dispatchers.Default) {
                 budgetPartDao.getBudgetAndPart()

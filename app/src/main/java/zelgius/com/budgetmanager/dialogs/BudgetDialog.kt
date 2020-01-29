@@ -18,7 +18,7 @@ class BudgetDialog : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val view = View.inflate(requireActivity(), R.layout.dialog_budget, null)
 
-        view.budgetName.editText?.setText(budget?.name)
+        view.name.editText?.setText(budget?.name)
 
 
         return MaterialAlertDialogBuilder(ContextThemeWrapper(requireActivity(),R.style.ThemeOverlay_BudgetManager_MaterialAlertDialog))
@@ -28,14 +28,14 @@ class BudgetDialog : DialogFragment() {
                 .create().apply {
                     setListeners(
                             positiveListener = {
-                                if (view.budgetName.editText?.text?.isEmpty() == false) {
+                                if (view.name.editText?.text?.isEmpty() == false) {
                                     if(budget == null) budget = Budget()
 
                                     listener?.invoke((budget
-                                            ?: Budget()).also { it.name = view.budgetName.editText?.text?.toString()!! })
+                                            ?: Budget()).also { it.name = view.name.editText?.text?.toString()!! })
                                     true
                                 } else {
-                                    view.budgetName.error = getString(R.string.name_required)
+                                    view.name.error = getString(R.string.name_required)
                                     false
                                 }
                             }

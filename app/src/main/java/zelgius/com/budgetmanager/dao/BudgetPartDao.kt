@@ -4,6 +4,7 @@ import androidx.paging.DataSource
 import androidx.room.*
 import zelgius.com.budgetmanager.entities.Budget
 import zelgius.com.budgetmanager.entities.BudgetPart
+import zelgius.com.budgetmanager.entities.SpareEntry
 
 @Dao
 interface BudgetPartDao {
@@ -19,6 +20,12 @@ interface BudgetPartDao {
     @Query("SELECT * FROM budget_part")
     suspend fun get(): List<BudgetPart>
 
+    @Query("SELECT * FROM budget_part WHERE ref_budget = :refBudget")
+    suspend fun get(refBudget: Long): List<BudgetPart>
+
+    @Query("SELECT * FROM budget_part WHERE ref_budget = :refBudget AND percent > 0")
+    suspend fun getGreaterThanZero(refBudget: Long): List<BudgetPart>
+
     @Query("""
        SELECT b.id AS b_id, b.name AS b_name, b.closed AS b_closed, b.start_date AS b_start_date, p.* FROM budget b
         LEFT OUTER JOIN budget_part p ON p.ref_budget = b.id
@@ -32,8 +39,6 @@ interface BudgetPartDao {
         ORDER BY b.closed, b.start_date
     """)
     fun getBudgetAndPartDataSource(): DataSource.Factory<Int, BudgetAndPart>
-
-
 }
 
 data class BudgetAndPart(
