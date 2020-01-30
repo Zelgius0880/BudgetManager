@@ -1,6 +1,5 @@
 package zelgius.com.budgetmanager.fragments
 
-import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.ShapeDrawable
@@ -18,22 +17,14 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
-import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.Legend
-import com.github.mikephil.charting.data.PieData
-import com.github.mikephil.charting.data.PieDataSet
-import com.github.mikephil.charting.data.PieEntry
-import com.github.mikephil.charting.utils.MPPointF
 import com.google.android.material.slider.Slider
 import kotlinx.android.extensions.LayoutContainer
-import kotlinx.android.synthetic.main.adapter_pie_part.view.*
+import kotlinx.android.synthetic.main.adapter_part_pie.view.*
 import kotlinx.android.synthetic.main.fragment_pie.*
 import zelgius.com.budgetmanager.*
 import zelgius.com.budgetmanager.entities.Budget
 import zelgius.com.budgetmanager.entities.BudgetPart
 import zelgius.com.budgetmanager.viewModel.BudgetViewModel
-import kotlin.math.abs
 
 
 /**
@@ -123,7 +114,7 @@ class PieFragment : ChartFragment() {
 
         inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
 
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.adapter_pie_part, parent, false))
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder = ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.adapter_part_pie, parent, false))
 
 
         override fun getItemCount(): Int = list.size

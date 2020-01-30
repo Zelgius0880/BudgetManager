@@ -4,14 +4,17 @@ import android.app.Application
 import androidx.lifecycle.*
 import androidx.paging.toLiveData
 import kotlinx.coroutines.launch
+import zelgius.com.budgetmanager.dao.BudgetPartWithAmount
 import zelgius.com.budgetmanager.entities.Budget
 import zelgius.com.budgetmanager.entities.BudgetPart
 import zelgius.com.budgetmanager.repositories.BudgetPartRepository
 import zelgius.com.budgetmanager.repositories.BudgetRepository
+import zelgius.com.budgetmanager.repositories.SpareEntryRepository
 
 class BudgetViewModel(app: Application) : AndroidViewModel(app) {
     private val repository = BudgetRepository(app)
     private val repositoryPart = BudgetPartRepository(app)
+    private val repositoryEntry = SpareEntryRepository(app)
 
     fun getPagedList() = repositoryPart.getDataSource().toLiveData(pageSize = 50)
 
@@ -120,15 +123,19 @@ class BudgetViewModel(app: Application) : AndroidViewModel(app) {
         return result
     }
 
-    fun getPart(budgetId: Long, greaterThanZero: Boolean = false): LiveData<List<BudgetPart>> {
-        val result = MutableLiveData<List<BudgetPart>>()
+    fun getPartAndAmount(budgetId: Long, greaterThanZero: Boolean = false): LiveData<List<BudgetPartWithAmount>> {
+        val result = MutableLiveData<List<BudgetPartWithAmount>>()
         viewModelScope.launch {
-            result.postValue(
-                    if (greaterThanZero)
-                        repositoryPart.getGreaterThanZero(budgetId)
-                    else
-                        repositoryPart.get(budgetId)
-            )
+            val b = repository.get(budgetId)
+
+            if(b != null) {
+                result.postValue(
+                        repositoryEntry.getBudgetPartWithAmount(b).apply {
+                            if (greaterThanZero)
+                                filter { it.part.percent > 0.0 }
+                        }
+                )
+            }
         }
 
         return result

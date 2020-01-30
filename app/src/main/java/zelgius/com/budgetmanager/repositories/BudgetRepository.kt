@@ -7,6 +7,7 @@ import zelgius.com.budgetmanager.entities.Budget
 
 open class BudgetRepository(context: Context) {
     open val budgetDao by lazy { AppDatabase.getInstance(context).budgetDao }
+    open val spareEntryDao by lazy { AppDatabase.getInstance(context).spareEntryDao }
 
     suspend fun insert(vararg budget: Budget) =
             withContext(Dispatchers.Default) {
@@ -32,6 +33,7 @@ open class BudgetRepository(context: Context) {
     suspend fun delete(vararg budget: Budget) =
             withContext(Dispatchers.Default) {
                 budget.forEach {
+                    spareEntryDao.updateRefBudgetToNull(it.id!!)
                     budgetDao.delete(it)
                 }
             }

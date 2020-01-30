@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
+import java.time.LocalDateTime
 
 @Entity(tableName = "budget_part", foreignKeys = [ForeignKey(entity = Budget::class, parentColumns = ["id"], childColumns = ["ref_budget"])])
 data class BudgetPart(
@@ -12,6 +13,7 @@ data class BudgetPart(
         var goal: Double = -1.0,
         var closed: Boolean = false,
         val reached: Boolean = false,
+        @ColumnInfo(name = "close_date") var closeDate: LocalDateTime? = null,
         @ColumnInfo(index = true, name = "ref_budget") var refBudget: Long? = null
 ) {
     constructor(id: Long?,
@@ -20,7 +22,7 @@ data class BudgetPart(
                 goal: Double,
                 closed: Boolean,
                 reached: Boolean,
-                refBudget: Long?) : this(id, name, goal, closed, reached, refBudget) {
+                refBudget: Long?) : this(id, name, goal, closed, reached, null, refBudget) {
         this.percent = percent
     }
 

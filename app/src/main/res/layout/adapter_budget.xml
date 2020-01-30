@@ -104,19 +104,19 @@
                     android:minHeight="56dp">
 
                     <TextView
-                        android:id="@+id/partName"
+                        android:id="@+id/entryName"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/partGoal"
+                        app:layout_constraintEnd_toStartOf="@+id/entryDate"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toEndOf="@+id/closePart"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="Budget 1" />
 
                     <TextView
-                        android:id="@+id/partGoal"
+                        android:id="@+id/entryDate"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="24dp"
@@ -124,7 +124,7 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toStartOf="@+id/deletePart"
                         app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/partName"
+                        app:layout_constraintStart_toEndOf="@+id/entryName"
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="23/07/2020" />
 

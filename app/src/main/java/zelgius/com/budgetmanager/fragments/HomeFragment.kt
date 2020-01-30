@@ -5,8 +5,6 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.Animation
-import android.view.animation.Transformation
 import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -15,16 +13,21 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.RecyclerView
 import com.db.williamchart.view.ImplementsAlphaChart
 import com.google.android.material.bottomappbar.BottomAppBar
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.adapter_part_main.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.recyclerView
+import kotlinx.android.synthetic.main.fragment_home.view.*
 import zelgius.com.budgetmanager.ColorGenerator
 import zelgius.com.budgetmanager.R
-import zelgius.com.budgetmanager.dpToPx
-import zelgius.com.budgetmanager.entities.BudgetPart
+import zelgius.com.budgetmanager.dao.BudgetPartWithAmount
+import zelgius.com.budgetmanager.dialogs.EntryDialog
+import zelgius.com.budgetmanager.entities.Budget
 import zelgius.com.budgetmanager.observeOnce
 import zelgius.com.budgetmanager.viewModel.BudgetViewModel
-import java.time.Duration
+import zelgius.com.budgetmanager.viewModel.EntryViewModel
+import java.text.DecimalFormat
 
 
 /** A simple [Fragment] subclass.
@@ -34,12 +37,21 @@ import java.time.Duration
 class HomeFragment : ChartFragment() {
 
 
-    private val viewModel by lazy {
+    private val budgetViewModel by lazy {
         ViewModelProvider(
                 requireActivity(),
                 ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
         ).get(BudgetViewModel::class.java)
     }
+
+    private val entryViewModel by lazy {
+        ViewModelProvider(
+                requireActivity(),
+                ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
+        ).get(EntryViewModel::class.java)
+    }
+
+    private var budget: Budget? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,6 +79,11 @@ class HomeFragment : ChartFragment() {
                             findNavController().navigate(R.id.action_homeFragment_to_pieFragment)
                             true
                         }
+
+                        R.id.menu_spare_entries -> {
+                            findNavController().navigate(R.id.action_homeFragment_to_entryFragment)
+                            true
+                        }
                         else -> false
                     }
                 }
@@ -74,20 +91,33 @@ class HomeFragment : ChartFragment() {
         val id = PreferenceManager.getDefaultSharedPreferences(requireContext()).getLong("BUDGET_ID", -1L)
 
         if (id > 0) {
-            viewModel.getPart(id, greaterThanZero = true).observeOnce(this) {
+            budgetViewModel.getPartAndAmount(id, greaterThanZero = true).observeOnce(this) {
                 recyclerView.adapter = Adapter(it)
-                setUpChart(chart, it, recyclerView)
+                setUpChart(chart, it.map {i -> i.part }, recyclerView)
             }
 
-            viewModel.get(id).observeOnce(this) {
+            budgetViewModel.get(id).observeOnce(this) {
                 if (it != null)
                     name.text = it.name
             }
         }
 
+        fab.setOnClickListener {
+            EntryDialog().apply {
+                selectedBudget = budget
+                listener = {
+                    entryViewModel.save(it).observeOnce(this) {
+                        Snackbar.make(view.coordinator, R.string.save_ok, Snackbar.LENGTH_SHORT)
+                                .setAnchorView(view.fab)
+                                .show()
+                    }
+                }
+            }
+                    .show(parentFragmentManager, null)
+        }
     }
 
-    inner class Adapter(val list: List<BudgetPart>) : RecyclerView.Adapter<ViewHolder>() {
+    inner class Adapter(val list: List<BudgetPartWithAmount>) : RecyclerView.Adapter<ViewHolder>() {
         private val colorGenerator = ColorGenerator(requireContext())
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
                 ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.adapter_part_main, parent, false))
@@ -97,29 +127,32 @@ class HomeFragment : ChartFragment() {
         @ImplementsAlphaChart
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             val item = list[position]
-            holder.itemView.partName.text = item.name
+            holder.itemView.entryName.text = item.part.name
             holder.itemView.imageView.visibility = View.GONE
             holder.itemView.progress.apply {
-                val color = colorGenerator.getColor(item.name + item.id)
+                val color = colorGenerator.getColor(item.part.name + item.part.id)
                 donutColors = intArrayOf(color)
                 animation.duration = 1000L
-                animate(listOf(101f))
+                animate(listOf((item.amount / item.part.goal).toFloat() *100f))
 
                 Handler().apply {
                     var current = 0.0
-                    val i = item.goal / (1000.0 / 50.0) // a view is refreshed +- every 16ms in the best conditions. Dividing by 50 to let the time to the view to be refreshed
+                    val i = item.amount / (1000.0 / 50.0) // a view is refreshed +- every 16ms in the best conditions. Dividing by 50 to let the time to the view to be refreshed
 
                     var work: (() -> Unit)? = null
                     work = {
-                        holder.itemView.progressText.text = String.format("%.1f / %.1f", current, item.goal)
+                        val format = DecimalFormat("0.#")
+                        holder.itemView.progressText.text = String.format("%s/%s €",
+                                format.format(current), format.format(item.part.goal))
 
                         current += i
-                        if (current < item.goal) postDelayed(50L, work!!)
+                        if (current < item.amount) postDelayed(50L, work!!)
                         else {
-                            holder.itemView.progressText.text = String.format("%.1f / %.1f", item.goal, item.goal)
-                            //holder.itemView.imageView.visibility = View.VISIBLE
+                            holder.itemView.progressText.text = String.format("%s/%s €",
+                                    format.format(item.amount), format.format(item.part.goal))
 
-                           holder.itemView.motion.transitionToEnd()
+                            if(item.amount >= item.part.goal)
+                                holder.itemView.motion.transitionToEnd()
                         }
 
                     }
@@ -132,30 +165,4 @@ class HomeFragment : ChartFragment() {
     }
 
     inner class ViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer
-
-    class ResizeAnimation(var view: View, private val targetWidth: Int, private val startWidth: Int = view.width) : Animation() {
-        override fun applyTransformation(interpolatedTime: Float, t: Transformation?) {
-            val newWidth = (startWidth + (targetWidth - startWidth) * interpolatedTime).toInt()
-            view.layoutParams.width = newWidth
-            view.requestLayout()
-        }
-
-        override fun willChangeBounds(): Boolean {
-            return true
-        }
-
-
-        fun startAnimation(duration: Long) {
-            this.duration = duration
-            startAnimation()
-        }
-
-        fun startAnimation() {
-            view.layoutParams.width = startWidth
-            view.requestLayout()
-
-            view.startAnimation(this)
-        }
-
-    }
 }

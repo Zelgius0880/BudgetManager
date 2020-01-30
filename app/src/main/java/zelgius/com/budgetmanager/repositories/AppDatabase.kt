@@ -15,11 +15,12 @@ import android.content.Context
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import java.sql.SQLException
 
 
 @Database(
         entities = [Budget::class, BudgetPart::class, SpareEntry::class],
-        version = 1
+        version = 2
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -38,6 +39,7 @@ abstract class AppDatabase : RoomDatabase() {
                             context,
                             AppDatabase::class.java, "database"
                     )
+                            .addMigrations(MIGRATION_1_2)
                             //.fallbackToDestructiveMigration()
                             .addCallback(object : Callback() {
                                 override fun onCreate(db: SupportSQLiteDatabase) {
@@ -53,9 +55,14 @@ abstract class AppDatabase : RoomDatabase() {
             return instance!!
         }
 
-        /*val MIGRATION_1_2 = createMigration(1, 2){
-            it.execSQL("")
-        }*/
+        val MIGRATION_1_2 = createMigration(1, 2) {
+            try {
+                it.execSQL("ALTER TABLE budget_part ADD COLUMN close_date INTEGER DEFAULT NULL")
+            } catch (e: SQLException) {
+                e.printStackTrace()
+            }
+        }
+
         private fun createMigration(from: Int, to: Int, work: (SupportSQLiteDatabase) -> Unit) =
                 object : Migration(from, to) {
                     override fun migrate(database: SupportSQLiteDatabase) {
@@ -69,8 +76,11 @@ class Converters {
 
 
     @TypeConverter
-    fun localDateTimeToLong(date: LocalDateTime): Long = date.toInstant(ZoneOffset.UTC).toEpochMilli()
+    fun localDateTimeToLong(date: LocalDateTime?): Long? = date?.toInstant(ZoneOffset.UTC)?.toEpochMilli()
 
     @TypeConverter
-    fun longToLocalDateTime(stamp: Long): LocalDateTime = Instant.ofEpochMilli(stamp).atZone(ZoneOffset.UTC).toLocalDateTime();
+    fun longToLocalDateTime(stamp: Long?): LocalDateTime? =
+            if (stamp != null)
+                Instant.ofEpochMilli(stamp).atZone(ZoneOffset.UTC).toLocalDateTime();
+            else null
 }

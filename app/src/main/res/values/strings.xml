@@ -13,4 +13,8 @@
     <string name="goal">Goal</string>
     <string name="invalid_number">Invalid number</string>
     <string name="edit_repartition">Edit part repartition</string>
+    <string name="amount">Amount</string>
+    <string name="comment">Comment</string>
+    <string name="entry_entry">Enter Entry</string>
+    <string name="not_associated">Not associated</string>
 </resources>

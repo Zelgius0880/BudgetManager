@@ -3,6 +3,8 @@ package zelgius.com.budgetmanager.repositories
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import zelgius.com.budgetmanager.dao.BudgetPartWithAmount
+import zelgius.com.budgetmanager.entities.Budget
 import zelgius.com.budgetmanager.entities.SpareEntry
 
 open class SpareEntryRepository(context: Context) {
@@ -36,11 +38,22 @@ open class SpareEntryRepository(context: Context) {
                 spareEntryDao.get()
             }
 
-    suspend fun getBudgetAndPart() =
-            withContext(Dispatchers.Default) {
-                spareEntryDao.getBudgetAndEntry()
-            }
+    suspend fun getByBudget(budget: Budget) =
+            spareEntryDao.getByBudget(budget.id!!)
+
+    suspend fun getSum(budget: Budget) =
+            spareEntryDao.getSum(budget.id!!)
+
+
 
     fun getDataSource() =
-        spareEntryDao.getBudgetAndEntryDataSource()
+            spareEntryDao.getDataSource()
+
+    fun getBudgetAndEntryDataSource() =
+            spareEntryDao.getBudgetAndEntryDataSource()
+
+    suspend fun getBudgetPartWithAmount(budget: Budget) =
+            spareEntryDao.getBudgetPartWithAmount(budget.id!!,
+                    spareEntryDao.getRepartition(budget.id!!)
+            )
 }

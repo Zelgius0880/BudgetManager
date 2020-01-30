@@ -289,8 +289,8 @@ class BudgetFragment : Fragment() {
                     holder.itemView.part.visibility = View.GONE
                 else {
                     holder.itemView.part.visibility = View.VISIBLE
-                    holder.itemView.partName.text = item.part.name
-                    holder.itemView.partGoal.text = String.format("%s€", item.part.goal.format(2))
+                    holder.itemView.entryName.text = item.part.name
+                    holder.itemView.entryDate.text = String.format("%s€", item.part.goal.format(2))
 
                     if (item.part.closed) {
                         holder.itemView.closePart.setIconResource(R.drawable.ic_baseline_check_circle_24)
