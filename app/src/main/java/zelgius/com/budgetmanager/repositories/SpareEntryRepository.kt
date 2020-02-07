@@ -9,6 +9,7 @@ import zelgius.com.budgetmanager.entities.SpareEntry
 
 open class SpareEntryRepository(context: Context) {
     open val spareEntryDao by lazy { AppDatabase.getInstance(context).spareEntryDao }
+    open val budgetPartDao by lazy { AppDatabase.getInstance(context).budgetPartDao }
 
     suspend fun insert(vararg spareEntry: SpareEntry) =
             withContext(Dispatchers.Default) {
@@ -53,7 +54,8 @@ open class SpareEntryRepository(context: Context) {
             spareEntryDao.getBudgetAndEntryDataSource()
 
     suspend fun getBudgetPartWithAmount(budget: Budget) =
-            spareEntryDao.getBudgetPartWithAmount(budget.id!!,
-                    spareEntryDao.getRepartition(budget.id!!)
-            )
+            spareEntryDao.getBudgetPartWithAmount(budget.id!!)
+
+    fun getPartAndAmountDataSource(budget: Budget) =
+            spareEntryDao.getBudgetPartWithAmountDataSource(budget.id!!)
 }

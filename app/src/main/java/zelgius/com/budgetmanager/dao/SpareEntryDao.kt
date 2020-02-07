@@ -37,24 +37,12 @@ interface SpareEntryDao {
     fun getDataSource(): DataSource.Factory<Int, SpareEntry>
 
 
-    @Query("""
-        SELECT (1 - SUM(percent)) / COUNT(*) FROM budget_part 
-        WHERE NOT closed AND ref_budget = :refBudget
-    """)
-    suspend fun getRepartition(refBudget: Long): Double
+    @Query(BUDGET_PART_WITH_AMOUNT_QUERY)
+    suspend fun getBudgetPartWithAmount(refBudget: Long): List<BudgetPartWithAmount>
 
 
-    @Query("""
-       SELECT p.*, 
-                (
-                    SELECT SUM(e.amount) * (p.percent + CASE WHEN NOT p.closed THEN :repartition ELSE 0 END)
-                    FROM spare_entry e
-                    WHERE e.ref_budget = :refBudget AND (NOT p.closed OR p.close_date < e.date)
-                ) AS part_amount
-        FROM budget_part p
-        WHERE p.ref_budget = :refBudget
-    """)
-    suspend fun getBudgetPartWithAmount(refBudget: Long, repartition: Double): List<BudgetPartWithAmount>
+    @Query(BUDGET_PART_WITH_AMOUNT_QUERY)
+    fun getBudgetPartWithAmountDataSource(refBudget: Long): DataSource.Factory<Int, BudgetPartWithAmount>
 
     @Query("UPDATE spare_entry SET ref_budget = NULL WHERE ref_budget = :refBudget")
     suspend fun updateRefBudgetToNull(refBudget: Long)
@@ -67,7 +55,29 @@ interface SpareEntryDao {
         ORDER BY e.date, b_start_date, b_closed 
     """)
     fun getBudgetAndEntryDataSource(): DataSource.Factory<Int, BudgetAndEntry>
+
+    companion object {
+        const val BUDGET_PART_WITH_AMOUNT_QUERY = """
+            SELECT * FROM (
+                WITH RECURSIVE repartition(r) AS (
+                    SELECT (1 - SUM(percent)) / COUNT(*) FROM budget_part 
+                    WHERE NOT closed AND ref_budget = :refBudget
+                )
+              
+                SELECT p.*, r, 
+                        (
+                            SELECT SUM(e.amount) * (p.percent + CASE WHEN NOT p.closed THEN r ELSE 0 END)
+                            FROM spare_entry e
+                            WHERE e.ref_budget = :refBudget AND (NOT p.closed OR p.close_date > e.date)
+                        ) AS part_amount
+                FROM budget_part p, repartition
+                WHERE p.ref_budget = :refBudget AND (p.percent + CASE WHEN NOT p.closed THEN r ELSE 0 END) > 0
+                ORDER BY closed, close_date DESC
+        )
+    """
+    }
 }
+
 
 data class BudgetPartWithAmount(
         @Embedded val part: BudgetPart,
@@ -76,7 +86,7 @@ data class BudgetPartWithAmount(
 
 
 data class BudgetAndEntry(
-        @Embedded(prefix = "b_")  val budget: Budget?,
+        @Embedded(prefix = "b_") val budget: Budget?,
         @Embedded val entry: SpareEntry,
         val total: Double
 )

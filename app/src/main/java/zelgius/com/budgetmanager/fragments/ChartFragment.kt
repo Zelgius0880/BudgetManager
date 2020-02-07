@@ -27,7 +27,7 @@ open class ChartFragment: Fragment() {
     lateinit var dataSet: PieDataSet
     private lateinit var colors: MutableList<Int>
 
-     fun setUpChart(chart: PieChart, list: List<BudgetPart>, recyclerView: RecyclerView? = null) {
+     open fun setUpChart(chart: PieChart, list: List<BudgetPart>, recyclerView: RecyclerView? = null) {
         chart.setUsePercentValues(true)
         chart.description.isEnabled = false
         chart.setExtraOffsets(5f, 10f, 5f, 5f)

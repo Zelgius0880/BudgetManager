@@ -3,6 +3,7 @@ package zelgius.com.budgetmanager.repositories
 import android.content.Context
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import zelgius.com.budgetmanager.entities.Budget
 import zelgius.com.budgetmanager.entities.BudgetPart
 
 open class BudgetPartRepository(context: Context) {
@@ -37,17 +38,34 @@ open class BudgetPartRepository(context: Context) {
             }
 
 
-    suspend fun get(refBudget: Long) =
+    suspend fun get(refBudget: Long, ignoreClosed: Boolean  = false) =
             withContext(Dispatchers.Default) {
-                budgetPartDao.get(refBudget)
+                if (!ignoreClosed)
+                    budgetPartDao.get(refBudget)
+                else {
+                    val repartition = budgetPartDao.getRepartition(refBudget)
+                    budgetPartDao.get(refBudget, repartition)
+                }/*.sortedBy {
+                    when {
+                        it.closed -> 2
+                        it.
+                    }
+                }*/
             }
 
 
-    suspend fun getGreaterThanZero(refBudget: Long) =
+    suspend fun getGreaterThanZero(refBudget: Long, ignoreClosed: Boolean  = false) =
             withContext(Dispatchers.Default) {
+                if(!ignoreClosed)
                 budgetPartDao.getGreaterThanZero(refBudget)
+                else {
+                    val repartition = budgetPartDao.getRepartition(refBudget)
+                    budgetPartDao.getGreaterThanZero(refBudget, repartition)
+                }
             }
 
+
+    suspend fun getRepartition(budget: Budget) = budgetPartDao.getRepartition(budget.id!!)
 
     suspend fun getBudgetAndPart() =
             withContext(Dispatchers.Default) {

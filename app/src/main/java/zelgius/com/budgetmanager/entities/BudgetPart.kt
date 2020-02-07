@@ -12,7 +12,7 @@ data class BudgetPart(
         var name: String = "",
         var goal: Double = -1.0,
         var closed: Boolean = false,
-        val reached: Boolean = false,
+        var reached: Boolean = false,
         @ColumnInfo(name = "close_date") var closeDate: LocalDateTime? = null,
         @ColumnInfo(index = true, name = "ref_budget") var refBudget: Long? = null
 ) {

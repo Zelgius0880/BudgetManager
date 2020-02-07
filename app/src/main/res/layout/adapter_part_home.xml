@@ -5,9 +5,15 @@
     android:id="@+id/materialCardView"
     android:layout_width="175dp"
     android:layout_height="175dp"
+    android:checkable="true"
+    android:clickable="true"
+    android:focusable="true"
     app:cardCornerRadius="4dp"
     app:cardElevation="2dp"
     app:cardUseCompatPadding="true"
+    app:checkedIcon="@drawable/ic_baseline_check_circle_24"
+    app:checkedIconTint="@color/color1"
+    style="@style/Widget.BudgetManager.MaterialCardViewStyle.Checkable"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -23,13 +29,15 @@
             android:id="@+id/progress"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:background="@android:color/transparent"
             app:layout_constraintBottom_toTopOf="@+id/progressText"
             app:layout_constraintDimensionRatio="w,1:1"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_editor_absoluteX="23dp">
 
         </com.db.williamchart.view.DonutChartView>
 

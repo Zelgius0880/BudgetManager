@@ -78,8 +78,7 @@ class BudgetFragment : Fragment() {
             }
 
             partCloseListener = {
-                it.closed = !it.closed
-                viewModel.save(it)
+                viewModel.close(it, !it.closed)
             }
         }
     }

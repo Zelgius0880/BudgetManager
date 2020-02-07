@@ -2,6 +2,7 @@ package zelgius.com.budgetmanager.viewModel
 
 import android.app.Application
 import androidx.lifecycle.*
+import androidx.paging.PagedList
 import androidx.paging.toLiveData
 import kotlinx.coroutines.launch
 import zelgius.com.budgetmanager.dao.BudgetPartWithAmount
@@ -10,6 +11,7 @@ import zelgius.com.budgetmanager.entities.BudgetPart
 import zelgius.com.budgetmanager.repositories.BudgetPartRepository
 import zelgius.com.budgetmanager.repositories.BudgetRepository
 import zelgius.com.budgetmanager.repositories.SpareEntryRepository
+import java.time.LocalDateTime
 
 class BudgetViewModel(app: Application) : AndroidViewModel(app) {
     private val repository = BudgetRepository(app)
@@ -17,6 +19,11 @@ class BudgetViewModel(app: Application) : AndroidViewModel(app) {
     private val repositoryEntry = SpareEntryRepository(app)
 
     fun getPagedList() = repositoryPart.getDataSource().toLiveData(pageSize = 50)
+    fun getPartAndAmountPagedList(budget: Budget) =
+                        repositoryEntry
+                                .getPartAndAmountDataSource(budget)
+                                .toLiveData(pageSize = 50)
+
 
     fun save(budget: Budget): LiveData<Boolean> {
         val result = MutableLiveData<Boolean>()
@@ -57,6 +64,20 @@ class BudgetViewModel(app: Application) : AndroidViewModel(app) {
                 repositoryPart.insert(part)
             else
                 repositoryPart.update(part)
+
+            result.postValue(true)
+        }
+
+        return result
+    }
+
+    fun close(part: BudgetPart, closed: Boolean = true): LiveData<Boolean> {
+        val result = MutableLiveData<Boolean>()
+        viewModelScope.launch {
+
+            part.closed = closed
+            part.closeDate = LocalDateTime.now()
+            repositoryPart.update(part)
 
             result.postValue(true)
         }
@@ -114,10 +135,10 @@ class BudgetViewModel(app: Application) : AndroidViewModel(app) {
         return result
     }
 
-    fun getPart(budget: Budget): LiveData<List<BudgetPart>> {
+    fun getPart(budget: Budget, ignoreClosed: Boolean = false): LiveData<List<BudgetPart>> {
         val result = MutableLiveData<List<BudgetPart>>()
         viewModelScope.launch {
-            result.postValue(repositoryPart.get(budget.id!!))
+            result.postValue(repositoryPart.get(budget.id!!, ignoreClosed))
         }
 
         return result
@@ -128,11 +149,18 @@ class BudgetViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val b = repository.get(budgetId)
 
-            if(b != null) {
+            if (b != null) {
                 result.postValue(
                         repositoryEntry.getBudgetPartWithAmount(b).apply {
                             if (greaterThanZero)
                                 filter { it.part.percent > 0.0 }
+                        }.sortedBy {
+                            when {
+                                it.part.closed -> Double.MAX_VALUE
+                                it.amount / it.part.goal >= 1 ->
+                                    if (it.part.reached) Double.MAX_VALUE - 1 else -1.0
+                                else -> it.amount / it.part.goal
+                            }
                         }
                 )
             }

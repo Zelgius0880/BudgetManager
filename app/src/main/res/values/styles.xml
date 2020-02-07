@@ -101,4 +101,10 @@
     <style name="Widget.BudgetManager.MaterialCardViewStyle.Neutral" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/md_white_1000</item>
     </style>
+
+
+    <style name="Widget.BudgetManager.MaterialCardViewStyle.Checkable" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/selector_card_view_colors</item>
+        <item name="colorPrimary">@color/md_blue_200</item>
+    </style>
 </resources>

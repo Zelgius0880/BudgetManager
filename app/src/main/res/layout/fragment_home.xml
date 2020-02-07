@@ -35,7 +35,7 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@+id/chart"
             tools:layout_editor_absoluteX="0dp"
-            tools:listitem="@layout/adapter_part_main" />
+            tools:listitem="@layout/adapter_part_home" />
 
         <TextView
             android:id="@+id/name"

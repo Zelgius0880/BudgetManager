@@ -92,7 +92,7 @@ class EntryFragment : Fragment() {
                 val item = adapter.getData(position)
 
                 if (item != null) {
-                    viewModel.delete(item.entry).observeOnce(this@EntryFragment) {
+                     viewModel.delete(item.entry).observeOnce(this@EntryFragment) {
                         Snackbar
                                 .make(coordinatorLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG)
                                 .setAction("UNDO") {
