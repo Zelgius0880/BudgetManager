@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">BudgetManager</string>
+    <string name="edit_budget">Editer un budget</string>
+    <string name="view_spare_entries">Voir les sommes economisées</string>
+    <string name="name">Nom</string>
+    <string name="new_budget">Nouveau budget</string>
+    <string name="save_ok">Sauvegardé</string>
+    <string name="name_required">Veuillez entrer un nom</string>
+    <string name="snack_delete_success">L\'élément a bien été supprimé</string>
+    <string name="goal">Objectif</string>
+    <string name="invalid_number">Entrée invalide</string>
+    <string name="edit_repartition">Editer une répartition</string>
+    <string name="amount">Montant</string>
+    <string name="comment">Commenaire</string>
+    <string name="entry_entry">Entrer un entrée</string>
+    <string name="not_associated">Non associé</string>
+    <string name="delete">Supprimer</string>
+    <string name="item_removed">L\'élément a bien été supprimé</string>
+    <string name="undo">ANNULER</string>
+</resources>

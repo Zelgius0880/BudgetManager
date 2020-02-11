@@ -38,6 +38,7 @@
         <item name="textInputStyle">@style/Widget.BudgetManager.TextInput</item>
         <item name="materialAlertDialogTheme">@style/ThemeOverlay.BudgetManager.MaterialAlertDialog</item>
         <item name="materialCardViewStyle">@style/ThemeOverlay.BudgetManager.MaterialAlertDialog</item>
+        <item name="seekBarStyle">@style/Widget.BudgetManager.SeekBar</item>
     </style>
 
     <style name="Widget.BudgetManager.ImageButton" parent="Widget.MaterialComponents.Button">
@@ -66,6 +67,22 @@
         <item name="android:paddingStart">8dp</item>
         <item name="android:layout_width">48dp</item>
         <item name="android:layout_height">48dp</item>
+        <item name="tint">@color/md_white_1000</item>
+        <item name="rippleColor">@color/md_white_1000</item>
+        <item name="elevation">0dp</item>
+        <item name="iconSize">24dp</item>
+        <item name="android:insetLeft">0dp</item>
+        <item name="android:insetRight">0dp</item>
+        <item name="android:insetTop">0dp</item>
+        <item name="android:insetBottom">0dp</item>
+    </style>
+
+    <style name="Widget.BudgetManager.ImageButton.OutlinedButton" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <!--<item name="backgroundTint">@color/primaryDarkColor</item>-->
+        <item name="android:paddingLeft">8dp</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
         <item name="tint">@color/md_white_1000</item>
         <item name="rippleColor">@color/md_white_1000</item>
         <item name="elevation">0dp</item>
@@ -106,5 +123,12 @@
     <style name="Widget.BudgetManager.MaterialCardViewStyle.Checkable" parent="Widget.MaterialComponents.CardView">
         <item name="cardBackgroundColor">@color/selector_card_view_colors</item>
         <item name="colorPrimary">@color/md_blue_200</item>
+    </style>
+
+    <style name="Widget.BudgetManager.SeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressDrawable"> @drawable/seekbar_progress</item>
+        <item name="android:thumb"> @drawable/seekbar_thumb</item>
+        <item name="splitTrack">false</item>
+        <item name="android:splitTrack">false</item>
     </style>
 </resources>

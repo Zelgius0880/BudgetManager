@@ -1,4 +1,4 @@
-package zelgius.com.budgetmanager.view
+package zelgius.com.swipetodelete
 
 
 import android.content.Context
@@ -8,13 +8,12 @@ import android.graphics.drawable.Drawable
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import zelgius.com.budgetmanager.R
 
 
-abstract class SwipeToDeleteCallback (private var context: Context) : ItemTouchHelper.Callback() {
-    private val mClearPaint: Paint
-    private val mBackground: ColorDrawable
-    private val backgroundColor: Int
+abstract class SwipeToDeleteCallback(context: Context, private val dragOnView: Boolean = false) : ItemTouchHelper.Callback() {
+    private val mClearPaint: Paint = Paint()
+    private val mBackground: ColorDrawable = ColorDrawable()
+    private val backgroundColor: Int = context.getColor(R.color.md_red_400)
     private val deleteDrawable: Drawable?
     private val intrinsicWidth: Int
     private val intrinsicHeight: Int
@@ -25,6 +24,8 @@ abstract class SwipeToDeleteCallback (private var context: Context) : ItemTouchH
     override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, viewHolder1: RecyclerView.ViewHolder): Boolean {
         return false
     }
+
+    override fun isItemViewSwipeEnabled(): Boolean = !dragOnView
 
     override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
         super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
@@ -58,9 +59,6 @@ abstract class SwipeToDeleteCallback (private var context: Context) : ItemTouchH
     }
 
     init {
-        mBackground = ColorDrawable()
-        backgroundColor = context.getColor(R.color.md_red_400)
-        mClearPaint = Paint()
         mClearPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR)
         deleteDrawable = ContextCompat.getDrawable(context, R.drawable.ic_baseline_delete_outline_24)
         deleteDrawable?.setTint(context.getColor(R.color.md_white_1000))

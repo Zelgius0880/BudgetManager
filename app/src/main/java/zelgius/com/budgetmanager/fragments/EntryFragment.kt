@@ -2,10 +2,13 @@ package zelgius.com.budgetmanager.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ItemTouchHelper
@@ -13,13 +16,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.extensions.LayoutContainer
 import kotlinx.android.synthetic.main.adapter_entry.view.*
+import kotlinx.android.synthetic.main.fragment_budget.*
 import kotlinx.android.synthetic.main.fragment_entry.*
+import kotlinx.android.synthetic.main.fragment_entry.recyclerView
+import kotlinx.android.synthetic.main.fragment_entry.toolbar
+import kotlinx.android.synthetic.main.fragment_entry.toolbarTitle
 import zelgius.com.budgetmanager.R
 import zelgius.com.budgetmanager.dao.BudgetAndEntry
 import zelgius.com.budgetmanager.observe
 import zelgius.com.budgetmanager.observeOnce
-import zelgius.com.budgetmanager.view.SwipeToDeleteCallback
+import zelgius.com.swipetodelete.SwipeToDeleteCallback
 import zelgius.com.budgetmanager.viewModel.EntryViewModel
+import zelgius.com.swipetodelete.SwipeToDeleteAdapter
+import zelgius.com.swipetodelete.SwipeToDeletePagedAdapter
 import java.text.DecimalFormat
 import java.time.format.DateTimeFormatter
 
@@ -61,10 +70,13 @@ class EntryFragment : Fragment() {
                 ViewModelProvider.AndroidViewModelFactory.getInstance(requireActivity().application)
         ).get(EntryViewModel::class.java)
     }
+    private val activity by lazy { requireActivity() as AppCompatActivity }
+    private val navController by lazy { findNavController() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {}
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -76,40 +88,39 @@ class EntryFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = Adapter()
+        activity.setSupportActionBar(toolbar)
+        activity.supportActionBar?.apply {
+            setHomeButtonEnabled(true)
+            setDisplayHomeAsUpEnabled(true)
+            toolbarTitle.setText(zelgius.com.budgetmanager.R.string.edit_budget)
+        }
+
+        val adapter = Adapter{ item ->
+            viewModel.delete(item.entry).observeOnce(this@EntryFragment) {
+                Snackbar
+                        .make(coordinatorLayout, R.string.item_removed, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo) {
+                            item.entry.id = null
+                            viewModel.save(item.entry)
+                        }
+                        //snackbar.setActionTextColor(Color.YELLOW)
+                        .show()
+            }
+        }
         recyclerView.adapter = adapter
         viewModel.getBudgetAndEntryDataSource().observe(this) {
             adapter.submitList(it)
         }
-        enableSwipeToDeleteAndUndo(recyclerView, adapter)
-
     }
 
-    private fun enableSwipeToDeleteAndUndo(recyclerView: RecyclerView, adapter: Adapter) {
-        val swipeToDeleteCallback: SwipeToDeleteCallback = object : SwipeToDeleteCallback(requireContext()) {
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, i: Int) {
-                val position = viewHolder.adapterPosition
-                val item = adapter.getData(position)
-
-                if (item != null) {
-                     viewModel.delete(item.entry).observeOnce(this@EntryFragment) {
-                        Snackbar
-                                .make(coordinatorLayout, "Item was removed from the list.", Snackbar.LENGTH_LONG)
-                                .setAction("UNDO") {
-                                    item.entry.id = null
-                                    viewModel.save(item.entry)
-                                }
-                                //snackbar.setActionTextColor(Color.YELLOW)
-                                .show()
-                    }
-                }
-            }
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> navController.navigateUp()
+            else -> super.onOptionsItemSelected(item)
         }
-        val itemTouchhelper = ItemTouchHelper(swipeToDeleteCallback)
-        itemTouchhelper.attachToRecyclerView(recyclerView)
     }
 
-    class Adapter : PagedListAdapter<BudgetAndEntry, BudgetViewHolder>(DIFF_CALLBACK) {
+    class Adapter(deleteListener: (BudgetAndEntry) -> Unit) :  SwipeToDeletePagedAdapter<BudgetAndEntry, BudgetViewHolder>(DIFF_CALLBACK, deleteListener = deleteListener) {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BudgetViewHolder =
                 BudgetViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.adapter_entry, parent, false))
@@ -142,9 +153,6 @@ class EntryFragment : Fragment() {
                 holder.itemView.entryDate.text = DateTimeFormatter.ISO_LOCAL_DATE.format(item.entry.date)
             }
         }
-
-        fun getData(position: Int) = getItem(position)
-
     }
 
     class BudgetViewHolder(override val containerView: View) : RecyclerView.ViewHolder(containerView), LayoutContainer

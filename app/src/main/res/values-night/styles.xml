@@ -1,0 +1,46 @@
+<resources>
+
+    <style name="Widget.BudgetManager.TextInput" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense">
+        <item name="boxBackgroundColor">@android:color/transparent</item>
+        <item name="colorOnSurface">@android:color/transparent</item>
+        <item name="colorPrimary">@color/md_teal_300</item>
+    </style>
+
+    <style name="ThemeOverlay.BudgetManager.MaterialAlertDialog" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="colorSurface">#424242</item>
+        <item name="colorPrimaryDark">@color/md_teal_300</item>
+        <item name="colorPrimary">@color/md_teal_300</item>
+        <item name="android:colorPrimaryDark">@color/md_teal_300</item>
+        <item name="android:colorPrimary">@color/md_teal_300</item>
+    </style>
+
+    <style name="Widget.BudgetManager.MaterialCardViewStyle" parent="Widget.MaterialComponents.CardView">
+        <item name="colorSurface">#424242</item>
+    </style>
+
+
+    <style name="Widget.BudgetManager.MaterialCardViewStyle.Primary" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/md_teal_900</item>
+    </style>
+
+    <style name="Widget.BudgetManager.MaterialCardViewStyle.Secondary" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/md_green_900</item>
+    </style>
+
+    <style name="Widget.BudgetManager.MaterialCardViewStyle.Neutral" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">#494949</item>
+    </style>
+
+
+    <style name="Widget.BudgetManager.MaterialCardViewStyle.Checkable" parent="Widget.MaterialComponents.CardView">
+        <item name="cardBackgroundColor">@color/selector_card_view_colors</item>
+        <item name="colorPrimary">@color/md_blue_700</item>
+    </style>
+
+    <style name="Widget.BudgetManager.SeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressDrawable"> @drawable/seekbar_progress</item>
+        <item name="android:thumb"> @drawable/seekbar_thumb</item>
+        <item name="splitTrack">false</item>
+        <item name="android:splitTrack">false</item>
+    </style>
+</resources>

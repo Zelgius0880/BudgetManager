@@ -38,10 +38,12 @@ interface SpareEntryDao {
 
 
     @Query(BUDGET_PART_WITH_AMOUNT_QUERY)
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     suspend fun getBudgetPartWithAmount(refBudget: Long): List<BudgetPartWithAmount>
 
 
     @Query(BUDGET_PART_WITH_AMOUNT_QUERY)
+    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     fun getBudgetPartWithAmountDataSource(refBudget: Long): DataSource.Factory<Int, BudgetPartWithAmount>
 
     @Query("UPDATE spare_entry SET ref_budget = NULL WHERE ref_budget = :refBudget")
@@ -59,7 +61,7 @@ interface SpareEntryDao {
     companion object {
         const val BUDGET_PART_WITH_AMOUNT_QUERY = """
             SELECT * FROM (
-                WITH RECURSIVE repartition(r) AS (
+                WITH repartition(r) AS (
                     SELECT (1 - SUM(percent)) / COUNT(*) FROM budget_part 
                     WHERE NOT closed AND ref_budget = :refBudget
                 )
@@ -71,8 +73,8 @@ interface SpareEntryDao {
                             WHERE e.ref_budget = :refBudget AND (NOT p.closed OR p.close_date > e.date)
                         ) AS part_amount
                 FROM budget_part p, repartition
-                WHERE p.ref_budget = :refBudget AND (p.percent + CASE WHEN NOT p.closed THEN r ELSE 0 END) > 0
-                ORDER BY closed, close_date DESC
+                WHERE (p.ref_budget = :refBudget OR p.ref_budget IS NULL) AND (p.percent + CASE WHEN NOT p.closed THEN r ELSE 0 END) > 0
+                ORDER BY closed, ref_budget DESC,  name, close_date DESC
         )
     """
     }

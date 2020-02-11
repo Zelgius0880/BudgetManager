@@ -15,7 +15,7 @@ data class BudgetPart(
         var reached: Boolean = false,
         @ColumnInfo(name = "close_date") var closeDate: LocalDateTime? = null,
         @ColumnInfo(index = true, name = "ref_budget") var refBudget: Long? = null
-) {
+) :Comparable<BudgetPart>{
     constructor(id: Long?,
                 percent: Double,
                 name: String,
@@ -27,4 +27,12 @@ data class BudgetPart(
     }
 
     var percent: Double = 0.0
+    override fun compareTo(other: BudgetPart): Int =
+        if (closed && !other.closed) 1
+        else if (!closed && other.closed) -1
+        else if (refBudget != null && other.refBudget == null) -1
+        else if (refBudget == null && other.refBudget != null) 1
+        else if (name == other.name) id?.compareTo(other.id?:0)?:0
+        else name.compareTo(other.name)
+
 }

@@ -74,4 +74,7 @@ open class BudgetPartRepository(context: Context) {
 
     fun getDataSource() =
         budgetPartDao.getBudgetAndPartDataSource()
+
+    fun getDataSource(budget: Budget) =
+        budgetPartDao.getDataSource(budget.id!!)
 }

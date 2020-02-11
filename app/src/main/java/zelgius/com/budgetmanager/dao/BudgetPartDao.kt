@@ -20,10 +20,15 @@ interface BudgetPartDao {
     @Query("SELECT * FROM budget_part")
     suspend fun get(): List<BudgetPart>
 
-    @Query("SELECT * FROM budget_part WHERE ref_budget = :refBudget ORDER BY closed")
+    @Query(GET_QUERY)
     suspend fun get(refBudget: Long): List<BudgetPart>
 
-    @Query("SELECT id, name, goal, closed, reached, close_date, ref_budget, percent + :repartition AS percent FROM budget_part WHERE ref_budget = :refBudget AND NOT closed")
+    @Query(GET_QUERY)
+    fun getDataSource(refBudget: Long): DataSource.Factory<Int, BudgetPart>
+
+    @Query("""SELECT id, name, goal, closed, reached, close_date, ref_budget, percent + :repartition AS percent FROM budget_part 
+        WHERE (ref_budget = :refBudget OR ref_budget IS NULL) AND NOT closed
+        ORDER BY  closed, ref_budget DESC, name ASC """)
     suspend fun get(refBudget: Long, repartition: Double): List<BudgetPart>
 
     @Query("SELECT * FROM budget_part WHERE ref_budget = :refBudget AND percent > 0")
@@ -48,10 +53,13 @@ interface BudgetPartDao {
 
     @Query("""
         SELECT (1 - SUM(percent)) / COUNT(*) FROM budget_part 
-        WHERE NOT closed AND ref_budget = :refBudget
+        WHERE NOT closed AND (ref_budget = :refBudget OR ref_budget IS NULL)  
     """)
     suspend fun getRepartition(refBudget: Long): Double
 
+    companion object {
+        const val GET_QUERY = "SELECT * FROM budget_part WHERE ref_budget = :refBudget OR ref_budget IS NULL ORDER BY  closed, ref_budget DESC, name ASC"
+    }
 }
 
 data class BudgetAndPart(

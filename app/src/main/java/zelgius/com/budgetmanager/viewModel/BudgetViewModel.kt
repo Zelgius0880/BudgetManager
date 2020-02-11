@@ -18,7 +18,8 @@ class BudgetViewModel(app: Application) : AndroidViewModel(app) {
     private val repositoryPart = BudgetPartRepository(app)
     private val repositoryEntry = SpareEntryRepository(app)
 
-    fun getPagedList() = repositoryPart.getDataSource().toLiveData(pageSize = 50)
+    fun getPagedList() = repository.getDataSource().toLiveData(pageSize = 50)
+    fun getPartPagedList(budget: Budget): LiveData<PagedList<BudgetPart>> = repositoryPart.getDataSource(budget).toLiveData(pageSize = 50)
     fun getPartAndAmountPagedList(budget: Budget) =
                         repositoryEntry
                                 .getPartAndAmountDataSource(budget)
@@ -40,10 +41,10 @@ class BudgetViewModel(app: Application) : AndroidViewModel(app) {
         return result
     }
 
-    fun save(budget: Budget, part: BudgetPart): LiveData<Boolean> {
+    fun save(budget: Budget?, part: BudgetPart): LiveData<Boolean> {
         val result = MutableLiveData<Boolean>()
         viewModelScope.launch {
-            part.refBudget = budget.id
+            part.refBudget = budget?.id
 
             if (part.id == null)
                 repositoryPart.insert(part)
@@ -154,14 +155,14 @@ class BudgetViewModel(app: Application) : AndroidViewModel(app) {
                         repositoryEntry.getBudgetPartWithAmount(b).apply {
                             if (greaterThanZero)
                                 filter { it.part.percent > 0.0 }
-                        }.sortedBy {
+                        }/*.sortedBy {
                             when {
                                 it.part.closed -> Double.MAX_VALUE
                                 it.amount / it.part.goal >= 1 ->
                                     if (it.part.reached) Double.MAX_VALUE - 1 else -1.0
                                 else -> it.amount / it.part.goal
                             }
-                        }
+                        }*/
                 )
             }
         }

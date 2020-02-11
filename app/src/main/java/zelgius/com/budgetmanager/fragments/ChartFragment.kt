@@ -1,6 +1,7 @@
 package zelgius.com.budgetmanager.fragments
 
 import android.graphics.Color
+import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,14 +21,15 @@ import zelgius.com.budgetmanager.ColorGenerator
 import zelgius.com.budgetmanager.entities.BudgetPart
 import zelgius.com.budgetmanager.round
 import kotlin.math.abs
+import kotlin.math.roundToInt
 
-open class ChartFragment: Fragment() {
+open class ChartFragment : Fragment() {
 
-    val map = mutableMapOf<BudgetPart, PieEntry>()
+    private val map = sortedMapOf<BudgetPart, PieEntry>()
     lateinit var dataSet: PieDataSet
     private lateinit var colors: MutableList<Int>
 
-     open fun setUpChart(chart: PieChart, list: List<BudgetPart>, recyclerView: RecyclerView? = null) {
+    open fun setUpChart(chart: PieChart, list: List<BudgetPart>, recyclerView: RecyclerView? = null) {
         chart.setUsePercentValues(true)
         chart.description.isEnabled = false
         chart.setExtraOffsets(5f, 10f, 5f, 5f)
@@ -38,10 +40,9 @@ open class ChartFragment: Fragment() {
         //chart.centerText = generateCenterSpannableText()
 
         chart.isDrawHoleEnabled = true
-        chart.setHoleColor(Color.WHITE)
+        chart.setHoleColor(Color.TRANSPARENT)
 
         chart.setTransparentCircleColor(Color.WHITE)
-        chart.setTransparentCircleAlpha(110)
         chart.setTransparentCircleAlpha(110)
 
         chart.holeRadius = 50f
@@ -85,6 +86,7 @@ open class ChartFragment: Fragment() {
         colors = mutableListOf()
         var remaining = 1.0
         val colorGenerator = ColorGenerator(requireContext())
+        map.clear()
         list.forEachIndexed { _, budgetPart ->
             PieEntry(
                     if (budgetPart.percent < 0.0) 0f else budgetPart.percent.toFloat(),
@@ -92,17 +94,21 @@ open class ChartFragment: Fragment() {
                     budgetPart
             ).let {
                 entries.add(it)
-                colors.add(colorGenerator.getColor(budgetPart.name + budgetPart.id!!))
                 map[budgetPart] = it
                 remaining -= budgetPart.percent
             }
         }
+
+        map.forEach{
+            colors.add(colorGenerator.getColor(it.key.name + it.key.id!!))
+        }
+
         if (remaining > 0)
             PieEntry(remaining.toFloat()).let {
                 entries.add(it)
             }
 
-        colors.add(Color.WHITE)
+        colors.add(Color.TRANSPARENT)
 
         dataSet = PieDataSet(entries, "")
         dataSet.colors = colors
@@ -127,38 +133,45 @@ open class ChartFragment: Fragment() {
                 val item = e?.data
                 if (item is BudgetPart) {
                     val index = list.indexOf(item)
-                    if(recyclerView != null)
+                    if (recyclerView != null)
                         (recyclerView.layoutManager as? LinearLayoutManager)?.smoothScrollToPosition(recyclerView, RecyclerView.State(), index)
                 }
             }
 
         })
+    }
 
+    fun removePart(part: BudgetPart) {
+        map.remove(part)
     }
 
 
-    fun updateChart(part: BudgetPart, value: Float, slider: Slider) {
-
+    fun updateChart(part: BudgetPart, value: Float, slider: SeekBar): Boolean {
         //if value and [part.percent] are the same, there is no change and so, no update to do
-        if (value == part.percent.toFloat()) return
+        if (value == part.percent.toFloat()) return false
 
         var total = 0.0
         part.percent = value.toDouble().round(3)
         map.forEach { (t, _) -> total += t.percent }
 
+        var update = true
         if (total > 1f) {
             part.percent = (value - (total - 1))
-            slider.value = abs(part.percent.toFloat().round(3))
+            slider.progress = abs((part.percent.toFloat().round(3)*100).roundToInt())
             total = 1.0
+            update = false
         }
 
+        map.remove(part)
         map[part] = PieEntry(
                 if (part.percent < 0.0) 0f else part.percent.toFloat(),
                 if (part.percent == 0.0) "" else part.name,
                 part
         )
 
-        val list = map.map { it.value }.toMutableList()
+        val list = map
+                .map { it.value }
+                .toMutableList()
 
         if (total < 1) {
             list.add(PieEntry(1 - total.toFloat()))
@@ -171,6 +184,8 @@ open class ChartFragment: Fragment() {
         dataSet.setDrawValues(false)
         chart.data = PieData(dataSet)
         chart.invalidate()
+
+        return  update
     }
 
 }

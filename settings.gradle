@@ -1,2 +1,3 @@
+include ':swipeToDelete'
 rootProject.name='BudgetManager'
 include ':app'
