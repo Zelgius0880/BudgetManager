@@ -2,9 +2,11 @@ package zelgius.com.budgetmanager.dao
 
 import androidx.paging.DataSource
 import androidx.room.*
+import zelgius.com.budgetmanager.dao.AmountForPartCount.Companion.SQL
 import zelgius.com.budgetmanager.entities.Budget
 import zelgius.com.budgetmanager.entities.BudgetPart
 import zelgius.com.budgetmanager.entities.SpareEntry
+
 
 @Dao
 interface SpareEntryDao {
@@ -38,12 +40,10 @@ interface SpareEntryDao {
 
 
     @Query(BUDGET_PART_WITH_AMOUNT_QUERY)
-    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     suspend fun getBudgetPartWithAmount(refBudget: Long): List<BudgetPartWithAmount>
 
 
     @Query(BUDGET_PART_WITH_AMOUNT_QUERY)
-    @SuppressWarnings(RoomWarnings.CURSOR_MISMATCH)
     fun getBudgetPartWithAmountDataSource(refBudget: Long): DataSource.Factory<Int, BudgetPartWithAmount>
 
     @Query("UPDATE spare_entry SET ref_budget = NULL WHERE ref_budget = :refBudget")
@@ -60,31 +60,56 @@ interface SpareEntryDao {
 
     companion object {
         const val BUDGET_PART_WITH_AMOUNT_QUERY = """
-            SELECT * FROM (
-                WITH repartition(r) AS (
-                    SELECT (1 - SUM(percent)) / COUNT(*) FROM budget_part 
-                    WHERE NOT closed AND ref_budget = :refBudget
-                )
-              
-                SELECT p.*, r, 
-                        (
-                            SELECT SUM(e.amount) * (p.percent + CASE WHEN NOT p.closed THEN r ELSE 0 END)
-                            FROM spare_entry e
-                            WHERE e.ref_budget = :refBudget AND (NOT p.closed OR p.close_date > e.date)
-                        ) AS part_amount
-                FROM budget_part p, repartition
-                WHERE (p.ref_budget = :refBudget OR p.ref_budget IS NULL) AND (p.percent + CASE WHEN NOT p.closed THEN r ELSE 0 END) > 0
-                ORDER BY closed, ref_budget DESC,  name, close_date DESC
-        )
+            SELECT p.*, CASE WHEN p.closed THEN
+                            (SELECT SUM(e.amount) * p1.percent FROM spare_entry e, budget_part p1 WHERE p1.id = p.id AND p1.close_date > e.date AND e.ref_budget =  :refBudget)
+                        WHEN NOT p.closed AND p.ref_budget IS NULL THEN
+                            (SELECT SUM(e.amount) * p1.percent FROM spare_entry e, budget_part p1 WHERE p1.id = p.id AND e.ref_budget = :refBudget)
+                        ELSE 
+                            (SELECT SUM(amount) FROM AmountForPartCount WHERE partId = p.id)
+                        END AS amount
+            FROM budget_part p WHERE p.ref_budget =  :refBudget OR p.ref_budget IS NULL
+            ORDER BY closed, ref_budget DESC,  name, close_date DESC
     """
+    }
+}
+
+
+@DatabaseView(SQL)
+data class AmountForPartCount(
+        val amount: Double,
+        val partId: Long,
+        val entryId: Long
+) {
+    companion object {
+        const val SQL = """
+        SELECT e.id AS entryId, p.id AS partId ,  SUM(
+		    e.amount  * (
+	 		p.percent + COALESCE(
+			 	(
+			 		SELECT SUM(p1.percent) 
+			 		FROM budget_part p1 
+			 		WHERE e.date > p1.close_date AND p1.closed  AND (p1.ref_budget IS NULL OR p1.ref_budget = p.ref_budget)
+			 	) / (
+			 		SELECT COUNT(*) 
+			 		FROM budget_part p1 
+			 		WHERE p1.ref_budget = p.ref_budget AND NOT p1.closed
+			 	)
+		 	, 0))
+        ) AS amount
+        FROM budget_part p, spare_entry e GROUP BY p.id, e.id
+        """
     }
 }
 
 
 data class BudgetPartWithAmount(
         @Embedded val part: BudgetPart,
-        @ColumnInfo(name = "part_amount") val amount: Double
-)
+        var amount: Double
+) : Comparable<BudgetPartWithAmount> {
+    override fun compareTo(other: BudgetPartWithAmount) =
+            part.compareTo(other.part)
+
+}
 
 
 data class BudgetAndEntry(

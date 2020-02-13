@@ -9,6 +9,7 @@ import androidx.constraintlayout.motion.widget.MotionScene
 import androidx.core.view.postDelayed
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.preference.PreferenceManager
@@ -89,7 +90,7 @@ class HomeFragment : ChartFragment() {
 
     private lateinit var mView: View
     private var parts = mutableListOf<BudgetPart>()
-    private var adapter : Adapter? = null
+    private var adapter: Adapter? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? =
@@ -148,12 +149,13 @@ class HomeFragment : ChartFragment() {
 
             budgetViewModel.get(id).observeOnce(this) {
                 if (it != null) {
-                    if(adapter == null) {
+                    if (adapter == null) {
                         adapter = Adapter()
                         recyclerView.adapter = adapter
-                        budgetViewModel.getPartAndAmountPagedList(it).observe(this) {list ->
+                        budgetViewModel.getPartAndAmountPagedList(it).observe(this@HomeFragment) { list ->
                             adapter?.submitList(list)
                         }
+
                     }
 
                     name.text = it.name
@@ -174,8 +176,8 @@ class HomeFragment : ChartFragment() {
             override fun onValueSelected(e: Entry?, h: Highlight?) {
                 val item = e?.data
                 if (item is BudgetPart) {
-                    val index = parts.indexOfFirst{it.id == item.id}
-                    if(recyclerView != null && index >= 0)
+                    val index = parts.indexOfFirst { it.id == item.id }
+                    if (recyclerView != null && index >= 0)
                         (recyclerView.layoutManager as? LinearLayoutManager)?.smoothScrollToPosition(recyclerView, RecyclerView.State(), index)
                 }
             }
@@ -213,6 +215,9 @@ class HomeFragment : ChartFragment() {
                 animation.duration = 1000L
                 animate(listOf((item.amount / item.part.goal).toFloat() * 100f))
 
+                holder.itemView.motion.setTransitionDuration(1)
+                holder.itemView.motion.transitionToStart()
+
                 Handler().apply {
                     var current = 0.0
                     val i = item.amount / (1000.0 / 50.0) // a view is refreshed +- every 16ms in the best conditions. Dividing by 50 to let the time to the view to be refreshed
@@ -230,11 +235,11 @@ class HomeFragment : ChartFragment() {
                                     format.format(item.amount), format.format(item.part.goal))
 
                             if (item.amount >= item.part.goal) {
-                                if(!item.part.reached) {
+                                if (!item.part.reached) {
                                     holder.itemView.motion.setTransitionDuration(1000)
                                     budgetViewModel.save(item.part.apply { item.part.reached = true })
                                     holder.itemView.motion.transitionToEnd()
-                                } else  {
+                                } else {
                                     holder.itemView.motion.setTransitionDuration(1)
                                     holder.itemView.motion.transitionToEnd()
                                 }

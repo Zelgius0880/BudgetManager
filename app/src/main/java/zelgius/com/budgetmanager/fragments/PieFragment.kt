@@ -159,8 +159,11 @@ class PieFragment : ChartFragment() {
                 needRefresh = true
 
                 listLiveData?.removeObserver(listObserver)
-                listLiveData = viewModel.getPartPagedList(budgets[position])
-                listLiveData?.observe(this@PieFragment, listObserver)
+                viewModel.getPartPagedList(budgets[position]).let {
+                    it.observe(this@PieFragment, listObserver)
+                    listLiveData = it
+                }
+
             }
 
         }

@@ -4,7 +4,9 @@ import android.app.Application
 import androidx.lifecycle.*
 import androidx.paging.PagedList
 import androidx.paging.toLiveData
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import zelgius.com.budgetmanager.dao.BudgetPartWithAmount
 import zelgius.com.budgetmanager.entities.Budget
 import zelgius.com.budgetmanager.entities.BudgetPart
@@ -21,10 +23,8 @@ class BudgetViewModel(app: Application) : AndroidViewModel(app) {
     fun getPagedList() = repository.getDataSource().toLiveData(pageSize = 50)
     fun getPartPagedList(budget: Budget): LiveData<PagedList<BudgetPart>> = repositoryPart.getDataSource(budget).toLiveData(pageSize = 50)
     fun getPartAndAmountPagedList(budget: Budget) =
-                        repositoryEntry
-                                .getPartAndAmountDataSource(budget)
+                        repositoryEntry.getPartAndAmountDataSource(budget)
                                 .toLiveData(pageSize = 50)
-
 
     fun save(budget: Budget): LiveData<Boolean> {
         val result = MutableLiveData<Boolean>()

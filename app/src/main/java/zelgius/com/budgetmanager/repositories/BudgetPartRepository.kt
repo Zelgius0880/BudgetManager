@@ -43,7 +43,7 @@ open class BudgetPartRepository(context: Context) {
                 if (!ignoreClosed)
                     budgetPartDao.get(refBudget)
                 else {
-                    val repartition = budgetPartDao.getRepartition(refBudget)
+                    val repartition = budgetPartDao.getRepartition(refBudget) ?: 0.0
                     budgetPartDao.get(refBudget, repartition)
                 }/*.sortedBy {
                     when {
@@ -52,18 +52,6 @@ open class BudgetPartRepository(context: Context) {
                     }
                 }*/
             }
-
-
-    suspend fun getGreaterThanZero(refBudget: Long, ignoreClosed: Boolean  = false) =
-            withContext(Dispatchers.Default) {
-                if(!ignoreClosed)
-                budgetPartDao.getGreaterThanZero(refBudget)
-                else {
-                    val repartition = budgetPartDao.getRepartition(refBudget)
-                    budgetPartDao.getGreaterThanZero(refBudget, repartition)
-                }
-            }
-
 
     suspend fun getRepartition(budget: Budget) = budgetPartDao.getRepartition(budget.id!!)
 

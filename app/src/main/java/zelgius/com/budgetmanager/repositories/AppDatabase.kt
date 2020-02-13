@@ -15,12 +15,14 @@ import android.content.Context
 import androidx.room.*
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import zelgius.com.budgetmanager.dao.AmountForPartCount
 import java.sql.SQLException
 
 
 @Database(
         entities = [Budget::class, BudgetPart::class, SpareEntry::class],
-        version = 2
+        views = [AmountForPartCount::class],
+        version = 4
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -40,6 +42,8 @@ abstract class AppDatabase : RoomDatabase() {
                             AppDatabase::class.java, "database"
                     )
                             .addMigrations(MIGRATION_1_2)
+                            .addMigrations(MIGRATION_2_3)
+                            .addMigrations(MIGRATION_3_4)
                             //.fallbackToDestructiveMigration()
                             .addCallback(object : Callback() {
                                 override fun onCreate(db: SupportSQLiteDatabase) {
@@ -58,6 +62,23 @@ abstract class AppDatabase : RoomDatabase() {
         val MIGRATION_1_2 = createMigration(1, 2) {
             try {
                 it.execSQL("ALTER TABLE budget_part ADD COLUMN close_date INTEGER DEFAULT NULL")
+            } catch (e: SQLException) {
+                e.printStackTrace()
+            }
+        }
+
+        val MIGRATION_2_3 = createMigration(2, 3) {
+            try {
+                it.execSQL("CREATE VIEW `AmountForPartCount` AS ${AmountForPartCount.SQL.trim()}")
+            } catch (e: SQLException) {
+                e.printStackTrace()
+            }
+        }
+
+        val MIGRATION_3_4 = createMigration(3, 4) {
+            try {
+                it.execSQL("DROP VIEW IF EXISTS `AmountForPartCount`")
+                it.execSQL("CREATE VIEW `AmountForPartCount` AS ${AmountForPartCount.SQL.trim()}")
             } catch (e: SQLException) {
                 e.printStackTrace()
             }
