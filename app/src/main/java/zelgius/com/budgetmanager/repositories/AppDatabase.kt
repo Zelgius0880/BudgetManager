@@ -22,7 +22,7 @@ import java.sql.SQLException
 @Database(
         entities = [Budget::class, BudgetPart::class, SpareEntry::class],
         views = [AmountForPartCount::class],
-        version = 4
+        version = 5
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -44,6 +44,7 @@ abstract class AppDatabase : RoomDatabase() {
                             .addMigrations(MIGRATION_1_2)
                             .addMigrations(MIGRATION_2_3)
                             .addMigrations(MIGRATION_3_4)
+                            .addMigrations(MIGRATION_4_5)
                             //.fallbackToDestructiveMigration()
                             .addCallback(object : Callback() {
                                 override fun onCreate(db: SupportSQLiteDatabase) {
@@ -76,6 +77,14 @@ abstract class AppDatabase : RoomDatabase() {
         }
 
         val MIGRATION_3_4 = createMigration(3, 4) {
+            try {
+                it.execSQL("DROP VIEW IF EXISTS `AmountForPartCount`")
+                it.execSQL("CREATE VIEW `AmountForPartCount` AS ${AmountForPartCount.SQL.trim()}")
+            } catch (e: SQLException) {
+                e.printStackTrace()
+            }
+        }
+        val MIGRATION_4_5 = createMigration(4, 5) {
             try {
                 it.execSQL("DROP VIEW IF EXISTS `AmountForPartCount`")
                 it.execSQL("CREATE VIEW `AmountForPartCount` AS ${AmountForPartCount.SQL.trim()}")

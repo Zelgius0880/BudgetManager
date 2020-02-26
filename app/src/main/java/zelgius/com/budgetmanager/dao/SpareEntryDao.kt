@@ -61,7 +61,11 @@ interface SpareEntryDao {
     companion object {
         const val BUDGET_PART_WITH_AMOUNT_QUERY = """
             SELECT p.*, CASE WHEN p.closed THEN
-                            (SELECT SUM(e.amount) * p1.percent FROM spare_entry e, budget_part p1 WHERE p1.id = p.id AND p1.close_date > e.date AND e.ref_budget =  :refBudget)
+                            --(SELECT SUM(e.amount) * p1.percent FROM spare_entry e, budget_part p1 WHERE p1.id = p.id AND p1.close_date > e.date AND e.ref_budget =  :refBudget)
+                            (SELECT SUM(a.amount) FROM AmountForPartCount a
+                                JOIN spare_entry e ON e.id = entryId 
+                            WHERE partId = p.id AND e.date < p.close_date)
+
                         WHEN NOT p.closed AND p.ref_budget IS NULL THEN
                             (SELECT SUM(e.amount) * p1.percent FROM spare_entry e, budget_part p1 WHERE p1.id = p.id AND e.ref_budget = :refBudget)
                         ELSE 
@@ -92,7 +96,7 @@ data class AmountForPartCount(
 			 	) / (
 			 		SELECT COUNT(*) 
 			 		FROM budget_part p1 
-			 		WHERE p1.ref_budget = p.ref_budget AND NOT p1.closed
+			 		WHERE p1.ref_budget = p.ref_budget AND (NOT p1.closed OR p1.close_date > e.date)
 			 	)
 		 	, 0))
         ) AS amount
